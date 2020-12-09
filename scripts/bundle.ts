@@ -3,7 +3,7 @@ import path from 'path';
 import { red, log, c } from 'x-chalk';
 import exec from 'x-exec';
 
-const ROOT_DIR = path.resolve(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, `..`);
 const ACTIONS_DIR = path.resolve(ROOT_DIR, `actions`);
 let [task, action = `all`] = process.argv.slice(2);
 
@@ -18,7 +18,7 @@ if (action !== `all`) {
   }
 }
 
-if (action == `all`) {
+if (action === `all`) {
   fs.readdirSync(ACTIONS_DIR, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .forEach((dirent) => bundle(dirent.name));
@@ -26,7 +26,7 @@ if (action == `all`) {
   bundle(action);
 }
 
-function bundle(action: string) {
+function bundle(action: string): void {
   log(
     c`📦 {gray bundling action} {magenta <${action}>} {gray for}`,
     task === `build` ? c`production {gray ...}\n` : c`dev {gray in watch mode ...}\n`,

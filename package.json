@@ -7,7 +7,13 @@
   "scripts": {
     "start": "npm run bundle -- watch",
     "build": "npm run bundle -- build",
-    "bundle": "fldev tsnode ./scripts/bundle.ts"
+    "bundle": "fldev tsnode ./scripts/bundle.ts",
+    "test": "true",
+    "lint": "fldev lint --ignore-pattern bundled/",
+    "lint:fix": "npm run lint -- --fix",
+    "ts:check": "fldev ts:check",
+    "format": "fldev format",
+    "compile": "true"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
@@ -20,11 +26,12 @@
     "@friends-library/document-meta": "^2.1.0",
     "@friends-library/friends": "^2.7.0",
     "@friends-library/lulu": "^1.2.1",
+    "@friends-library/slack": "^2.0.0",
     "@octokit/action": "^3.1.6",
     "netlify": "^4.9.0"
   },
   "devDependencies": {
-    "@friends-library/dev": "^4.1.13",
+    "@friends-library/dev": "^4.1.15",
     "@friends-library/types": "^3.0.0",
     "@vercel/ncc": "^0.25.1",
     "x-chalk": "^1.0.1",
