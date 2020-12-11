@@ -3,12 +3,8 @@ import { podPackageId, LuluClient, LuluAPI } from '@friends-library/lulu';
 import { Client as DbClient, Db } from '@friends-library/db';
 import { fetch as fetchMeta, DocumentMeta } from '@friends-library/document-meta';
 import { log } from '@friends-library/slack';
-import {
-  getAllFriends,
-  Edition,
-  jsFriendMap,
-  setResolveMap,
-} from '@friends-library/friends';
+import { getAllFriends, setResolveMap } from '@friends-library/friends/query';
+import { Edition, jsFriendMap } from '@friends-library/friends';
 
 async function main(): Promise<void> {
   setResolveMap(jsFriendMap);
