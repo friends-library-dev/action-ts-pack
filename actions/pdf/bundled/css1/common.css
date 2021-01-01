@@ -221,6 +221,12 @@ h4.blurb,
   text-align: center;
 }
 
+.chapter-heading--blurb .book-title,
+.blurb .book-title {
+  font-variant: small-caps;
+  font-style: normal;
+}
+
 .chapter-synopsis p {
   font-style: italic;
   text-align: center;
