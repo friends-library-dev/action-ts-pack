@@ -1,4 +1,5 @@
-import { LintOptions, EditionType } from '@friends-library/types';
+import { LintOptions, EditionType, LintResult, Asciidoc } from '@friends-library/types';
+import { Parser, ParserError } from '@friends-library/parser';
 
 export interface Annotation {
   path: string;
@@ -10,7 +11,7 @@ export interface Annotation {
   annotation_level: 'failure';
 }
 
-export function toAnnotation(lint: Record<string, any>, path: string): Annotation {
+export function toAnnotation(lint: LintResult, path: string): Annotation {
   const annotation: Annotation = {
     path,
     start_line: lint.line,
@@ -40,4 +41,35 @@ export function lintOptions(path: string): LintOptions {
   if (path.includes(`modernized/`)) edition = `modernized`;
   if (path.includes(`updated/`)) edition = `updated`;
   return { lang, editionType: edition };
+}
+
+export function parserErrors(adoc: Asciidoc, path: string): Annotation[] {
+  try {
+    Parser.parseDocument({ adoc, filename: path });
+    return [];
+  } catch (err) {
+    if (err instanceof ParserError) {
+      return [
+        {
+          path,
+          start_line: err.lineNumber,
+          end_line: err.lineNumber,
+          start_column: err.columnStart,
+          end_column: err.columnEnd,
+          annotation_level: `failure`,
+          message: `${err.message}\n\n\`\`\`\n${err.codeFrame}\n\`\`\``,
+        },
+      ];
+    } else {
+      return [
+        {
+          path,
+          start_line: 1,
+          end_line: 1,
+          annotation_level: `failure`,
+          message: `UNEXPECTED PARSE ERROR: ${err.message ?? `<no error message>`}`,
+        },
+      ];
+    }
+  }
 }

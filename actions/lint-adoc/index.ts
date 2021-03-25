@@ -3,7 +3,7 @@ import { lint } from '@friends-library/adoc-lint';
 import * as core from '@actions/core';
 import { Octokit } from '@octokit/action';
 import { newOrModifiedFiles } from '../helpers';
-import { Annotation, toAnnotation, lintOptions } from './lint-helpers';
+import { Annotation, toAnnotation, lintOptions, parserErrors } from './lint-helpers';
 import * as pr from '../pull-requests';
 import { latestCommitSha } from '../helpers';
 
@@ -21,6 +21,7 @@ async function main(): Promise<void> {
     errors = [
       ...errors,
       ...lint(asciidoc, lintOptions(path)).map((l) => toAnnotation(l, path)),
+      ...parserErrors(asciidoc, path),
     ];
   });
 

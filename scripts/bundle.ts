@@ -33,11 +33,12 @@ function bundle(action: string): void {
   );
 
   const dir = `${ACTIONS_DIR}/${action}`;
-  const last = task === `build` ? `--minify` : `--watch`;
-  exec.out(
-    `npx ncc build ${dir}/index.ts --out ${dir}/bundled --quiet ${last}`,
-    ROOT_DIR,
-  );
+  let flag = task === `build` ? ` --minify` : ` --watch`;
+  if (dir.endsWith(`pdf`) && task === `build`) {
+    flag = ``; // minification hangs on large PDF bundle :(
+  }
+
+  exec.out(`npx ncc build ${dir}/index.ts --out ${dir}/bundled --quiet${flag}`, ROOT_DIR);
 }
 
 function abort(msg: string): never {

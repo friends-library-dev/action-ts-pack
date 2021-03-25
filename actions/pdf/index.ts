@@ -4,8 +4,7 @@ import * as core from '@actions/core';
 import { Octokit } from '@octokit/action';
 import { pdf } from '@friends-library/doc-artifacts';
 import { uploadFile } from '@friends-library/cloud';
-import { DocPrecursor } from '@friends-library/types';
-import { processDocument } from '@friends-library/adoc-convert';
+import { genericDpc, DocPrecursor } from '@friends-library/types';
 import { paperbackInterior } from '@friends-library/doc-manifests';
 import { newOrModifiedFiles, latestCommitSha } from '../helpers';
 import * as pr from '../pull-requests';
@@ -24,7 +23,7 @@ async function main(): Promise<void> {
   for (const file of newOrModifiedFiles()) {
     const filename = path.basename(file);
     const adoc = fs.readFileSync(file).toString();
-    const dpc = dpcFromAdocFragment(adoc, owner, repo);
+    const dpc = dpcFromAdocFragment(adoc, file, owner, repo);
     try {
       const [manifest] = await paperbackInterior(dpc, {
         frontmatter: false,
@@ -58,41 +57,19 @@ async function main(): Promise<void> {
 
 main();
 
-function dpcFromAdocFragment(adoc: string, owner: string, repo: string): DocPrecursor {
-  const { epigraphs, sections, notes } = processDocument(adoc);
-  return {
-    lang: owner === `biblioteca-de-los-amigos` ? `es` : `en`,
-    friendSlug: `test`,
-    friendInitials: [`F`, `P`],
-    documentSlug: `test`,
-    path: `test`,
-    documentId: `test`,
-    editionType: `original`,
-    asciidoc: adoc,
-    epigraphs,
-    sections,
-    notes,
-    paperbackSplits: [],
-    printSize: `m`,
-    isCompilation: false,
-    blurb: ``,
-    config: {},
-    customCode: { css: {}, html: {} },
-    meta: {
-      title: `Test Document`,
-      isbn: ``,
-      author: {
-        name: repo
-          .split(`-`)
-          .map(([first, ...rest]) => first.toUpperCase() + rest.join(``))
-          .join(` `),
-        nameSort: ``,
-      },
-    },
-    revision: {
-      timestamp: Date.now(),
-      sha: ``,
-      url: ``,
-    },
-  };
+function dpcFromAdocFragment(
+  adoc: string,
+  path: string,
+  owner: string,
+  repo: string,
+): DocPrecursor {
+  const dpc = genericDpc();
+  dpc.lang = owner === `biblioteca-de-los-amigos` ? `es` : `en`;
+  dpc.asciidocFiles = [{ adoc, filename: path }];
+  dpc.meta.title = `PR Preview`;
+  dpc.meta.author.name = repo
+    .split(`-`)
+    .map(([first, ...rest]) => first.toUpperCase() + rest.join(``))
+    .join(` `);
+  return dpc;
 }
