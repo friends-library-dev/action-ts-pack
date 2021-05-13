@@ -125,8 +125,19 @@ function printJobLineItem(
   order: Db.Order,
 ): LuluAPI.CreatePrintJobPayload['line_items'][0][] {
   const key = `${order.lang}/${item.documentId}/${item.edition}`;
+
+  // @TODO - should probably get edition data from the API -- as there is a
+  // hidden dependency on this action/ts-pack repo getting rebuilt everytime
+  // we add a new book, if a customer buys a new book before this repo is
+  // updated, it won't be found.  there is some complexity around multi-vol
+  // books, but better to duplicate a bit of filename logic than have this issue.
+  // the other thing we could do is have an API endpoint that we could use to hydrate a
+  // friend/doc/edition entity.... but... that's a bit janky
+  // probably better is a c printf style placeholder paperback-cover-multivol filename
+  // or... we could have a github action webhook to rebuild this repo with latest /friends repo?
   const edition = editions().get(key);
   if (!edition) throw new Error(`404 Edition from order item: ${key}`);
+
   const edMeta = meta.get(edition.path);
   if (!edMeta) throw new Error(`404 edition meta from order item: ${key}`);
   const cloudUrl = process.env.INPUT_CLOUD_STORAGE_BUCKET_URL || ``;
