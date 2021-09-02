@@ -37,7 +37,7 @@ async function main(): Promise<void> {
       const url = await uploadFile(pdfPath, `actions/${repo}/${PR_NUM}/${cloudFilename}`);
       uploaded.push([url, cloudFilename]);
     } catch (err) {
-      core.setFailed(err);
+      core.setFailed(String(err));
       return;
     }
   }

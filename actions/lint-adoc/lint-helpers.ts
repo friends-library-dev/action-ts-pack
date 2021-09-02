@@ -67,7 +67,7 @@ export function parserErrors(adoc: Asciidoc, path: string): Annotation[] {
           start_line: 1,
           end_line: 1,
           annotation_level: `failure`,
-          message: `UNEXPECTED PARSE ERROR: ${err.message ?? `<no error message>`}`,
+          message: `UNEXPECTED PARSE ERROR: ${String(err)}`,
         },
       ];
     }

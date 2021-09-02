@@ -50,7 +50,7 @@ async function main(): Promise<void> {
     core.setOutput(`url`, url);
     core.info(`Output \`url\` set to ${url}`);
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(String(error));
   }
 }
 

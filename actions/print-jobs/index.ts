@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import { podPackageId, LuluClient, LuluAPI } from '@friends-library/lulu';
-import { Client as DbClient, Db } from '@friends-library/db';
+import { Client as DbClient, Order } from '@friends-library/db';
 import { fetch as fetchMeta, DocumentMeta } from '@friends-library/document-meta';
 import { log } from '@friends-library/slack';
 import { getAllFriends, setResolveMap } from '@friends-library/friends/query';
@@ -8,16 +8,20 @@ import { Edition, jsFriendMap } from '@friends-library/friends';
 
 async function main(): Promise<void> {
   setResolveMap(jsFriendMap);
-  const db = new DbClient(process.env.INPUT_FAUNA_SERVER_SECRET || ``);
+  const db = new DbClient(
+    process.env.INPUT_FLP_API_ENDPOINT || ``,
+    process.env.INPUT_FLP_API_TOKEN ?? ``,
+  );
   const lulu = getLuluClient();
   const meta = await fetchMeta();
 
-  const [err, orders] = await db.orders.findByPrintJobStatus(`presubmit`);
-  if (err || !orders) {
-    log.error(`Error retrieving presubmit orders from db`, { err, orders });
+  const findOrders = await db.orders.findByPrintJobStatus(`presubmit`);
+  if (!findOrders.success) {
+    log.error(`Error retrieving presubmit orders from db`, { error: findOrders.error });
     return;
   }
 
+  const { value: orders } = findOrders;
   if (orders.length === 0) {
     log.debug(`No orders in state \`presubmit\` to process from gh action.`);
     return;
@@ -54,8 +58,8 @@ async function main(): Promise<void> {
     for (const delay of DELAYS) {
       if (orderUpdated) continue;
       await sleep(delay);
-      const [err] = await db.orders.save(order);
-      if (!err) orderUpdated = true;
+      const saveResult = await db.orders.save(order);
+      if (saveResult.success) orderUpdated = true;
     }
 
     if (!orderUpdated) {
@@ -85,9 +89,11 @@ async function main(): Promise<void> {
       order.printJobStatus = `accepted`;
     }
 
-    const [err] = await db.orders.save(order);
-    if (err) {
-      log.error(`Error updating print job ${printJob.id} status`, { err });
+    const saveResult = await db.orders.save(order);
+    if (!saveResult.success) {
+      log.error(`Error updating print job ${printJob.id} status`, {
+        error: saveResult.error,
+      });
     }
   }
 }
@@ -99,7 +105,7 @@ const VERIFY_DELAY = 180000;
 const DELAYS = [0, 5000, MAX_DELAY];
 
 function createPrintJobPayload(
-  order: Db.Order,
+  order: Order,
   meta: DocumentMeta,
 ): LuluAPI.CreatePrintJobPayload {
   return {
@@ -120,11 +126,11 @@ function createPrintJobPayload(
 }
 
 function printJobLineItem(
-  item: Db.Order['items'][0],
+  item: Order['items'][0],
   meta: DocumentMeta,
-  order: Db.Order,
+  order: Order,
 ): LuluAPI.CreatePrintJobPayload['line_items'][0][] {
-  const key = `${order.lang}/${item.documentId}/${item.edition}`;
+  const key = `${order.lang}/${item.documentId}/${item.editionType}`;
 
   // @TODO - should probably get edition data from the API -- as there is a
   // hidden dependency on this action/ts-pack repo getting rebuilt everytime

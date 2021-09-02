@@ -6,7 +6,9 @@ inputs:
     required: true
   lulu_is_sandbox:
     required: true
-  fauna_server_secret:
+  flp_api_endpoint:
+    required: true
+  flp_api_token:
     required: true
   cloud_storage_bucket_url:
     required: true
