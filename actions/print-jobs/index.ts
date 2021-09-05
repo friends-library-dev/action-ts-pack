@@ -144,7 +144,7 @@ function printJobLineItem(
   const edition = editions().get(key);
   if (!edition) throw new Error(`404 Edition from order item: ${key}`);
 
-  const edMeta = meta.get(edition.path);
+  const edMeta = meta.get(edition.path.toLowerCase());
   if (!edMeta) throw new Error(`404 edition meta from order item: ${key}`);
   const cloudUrl = process.env.INPUT_CLOUD_STORAGE_BUCKET_URL || ``;
   const url = `${cloudUrl}/${edition.path}`;
