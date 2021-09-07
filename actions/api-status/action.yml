@@ -1,0 +1,11 @@
+name: api-status
+inputs:
+  flp_api_status_query_token:
+    required: true
+  flp_api_endpoint:
+    required: true
+  gertrude_api_endpoint:
+    required: true
+runs:
+  using: node12
+  main: ./bundled/index.js
