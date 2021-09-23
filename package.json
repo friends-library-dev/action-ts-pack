@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@friends-library/adoc-lint": "^1.13.1",
+    "@friends-library/adoc-lint": "^1.13.2",
     "@friends-library/cloud": "^1.8.1",
     "@friends-library/db": "^2.1.4",
     "@friends-library/doc-artifacts": "^2.0.1",
