@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import { podPackageId, LuluClient, LuluAPI } from '@friends-library/lulu';
 import { Client as DbClient, Order } from '@friends-library/db';
 import { fetch as fetchMeta, DocumentMeta } from '@friends-library/document-meta';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import { getAllFriends, setResolveMap } from '@friends-library/friends/query';
 import { Edition, jsFriendMap } from '@friends-library/friends';
 
