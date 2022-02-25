@@ -10,7 +10,7 @@ async function main(): Promise<void> {
         'Content-Type': `application/json`,
       },
       body: JSON.stringify({
-        query: `query { counts: getModelsCounts { downloads orders orderItems } }`,
+        query: `query { counts: getModelsCounts { friends } }`,
       }),
     });
     const json = await res.json();
