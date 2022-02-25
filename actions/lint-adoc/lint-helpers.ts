@@ -1,4 +1,5 @@
-import { LintOptions, EditionType, LintResult, Asciidoc } from '@friends-library/types';
+import { LintOptions, LintResult } from '@friends-library/adoc-lint';
+import { EditionType } from '@friends-library/types';
 import { Parser, ParserError } from '@friends-library/parser';
 
 export interface Annotation {
@@ -43,7 +44,7 @@ export function lintOptions(path: string): LintOptions {
   return { lang, editionType: edition };
 }
 
-export function parserErrors(adoc: Asciidoc, path: string): Annotation[] {
+export function parserErrors(adoc: string, path: string): Annotation[] {
   try {
     Parser.parseDocument({ adoc, filename: path });
     return [];

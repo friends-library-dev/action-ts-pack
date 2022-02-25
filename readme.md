@@ -8,11 +8,11 @@ _Github actions written in typescript, with some shared libs and bundling with
 Starts `ncc` in watch mode for one or all sub-actions:
 
 ```bash
-# develop the `print-jobs` action
-$ npm start print-jobs
+# develop the `api-status` action
+$ npm start api-status
 
 # tab-complete-able path to dir works too:
-$ npm start actions/print-jobs/
+$ npm start actions/api-status/
 
 # or, do all at once:
 $ npm start all
@@ -25,11 +25,11 @@ $ npm start
 Create production bundled javascript for one or all sub-actions:
 
 ```bash
-# build just the `print-jobs` action
-$ npm run build print-jobs
+# build just the `api-status` action
+$ npm run build api-status
 
 # tab-complete-able path to dir works too:
-$ npm run build actions/print-jobs/
+$ npm run build actions/api-status/
 
 # or, do all at once:
 $ npm run build all
