@@ -8,30 +8,24 @@ import log from '@friends-library/slack';
 type Metadata = { size: number; hash: string };
 
 async function main(): Promise<void> {
-  core.info(
-    `lengh of bucket url: ${(process.env.CLOUD_STORAGE_BUCKET_URL ?? ``).length}`,
-  );
-  core.info(`lengh of bucket: ${(process.env.CLOUD_STORAGE_BUCKET ?? ``).length}`);
-  core.info(`lengh of endpoint: ${(process.env.CLOUD_STORAGE_ENDPOINT ?? ``).length}`);
-  core.info(`lengh of key: ${(process.env.CLOUD_STORAGE_KEY ?? ``).length}`);
-  core.info(`lengh of secret: ${(process.env.CLOUD_STORAGE_SECRET ?? ``).length}`);
-  core.info(`starting up`);
   const buildData = await getApiBuildData();
-  core.info(`got some buildData: ${buildData?.length}`);
-  core.info(`go get last build meta`);
   const lastBuildMeta = await getLastBuildMeta();
-  core.info(`got some lastBuildMeta: ${lastBuildMeta}`);
-  if (
-    buildData &&
-    lastBuildMeta &&
-    buildData.length === lastBuildMeta.size &&
-    md5(JSON.stringify(buildData)) === lastBuildMeta.hash
-  ) {
+  if (!buildData || !lastBuildMeta) {
+    return;
+  }
+
+  const hash = md5(JSON.stringify(buildData));
+  if (buildData.length === lastBuildMeta.size && hash === lastBuildMeta.hash) {
     log.debug(`No republish of evans websites needed`);
     core.setOutput(`should_republish`, `false`);
+    core.info(`Output \`should_republish\` set to \`false\``);
   } else {
     log.info(`Republish of evans websites needed`);
     core.setOutput(`should_republish`, `true`);
+    core.info(`Output \`should_republish\` set to \`true\``);
+    const newMeta: Metadata = { size: buildData.length, hash };
+    core.setOutput(`build_meta`, JSON.stringify(newMeta));
+    core.info(`Output \`build_meta\` set to \`${JSON.stringify(newMeta)}\``);
   }
 }
 
@@ -70,6 +64,7 @@ async function getApiBuildData(): Promise<string | null> {
 }
 
 function reportError(message: string): void {
+  core.error(message);
   core.setFailed(message);
   log.error(message);
 }
