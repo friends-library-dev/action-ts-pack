@@ -9,23 +9,24 @@ type Metadata = { size: number; hash: string };
 
 async function main(): Promise<void> {
   core.info(`starting up`);
-  const buildData = await getApiBuildData();
-  core.info(`got some buildData: ${buildData?.length}`);
-  core.info(`go get last build meta`);
-  const lastBuildMeta = await getLastBuildMeta();
-  core.info(`got some lastBuildMeta: ${lastBuildMeta}`);
-  if (
-    buildData &&
-    lastBuildMeta &&
-    buildData.length === lastBuildMeta.size &&
-    md5(JSON.stringify(buildData)) === lastBuildMeta.hash
-  ) {
-    log.debug(`No republish of evans websites needed`);
-    core.setOutput(`should_republish`, `false`);
-  } else {
-    log.info(`Republish of evans websites needed`);
-    core.setOutput(`should_republish`, `true`);
-  }
+  core.setOutput(`should_republish`, `true`);
+  // const buildData = await getApiBuildData();
+  // core.info(`got some buildData: ${buildData?.length}`);
+  // core.info(`go get last build meta`);
+  // const lastBuildMeta = await getLastBuildMeta();
+  // core.info(`got some lastBuildMeta: ${lastBuildMeta}`);
+  // if (
+  //   buildData &&
+  //   lastBuildMeta &&
+  //   buildData.length === lastBuildMeta.size &&
+  //   md5(JSON.stringify(buildData)) === lastBuildMeta.hash
+  // ) {
+  //   log.debug(`No republish of evans websites needed`);
+  //   core.setOutput(`should_republish`, `false`);
+  // } else {
+  //   log.info(`Republish of evans websites needed`);
+  //   core.setOutput(`should_republish`, `true`);
+  // }
 }
 
 async function getLastBuildMeta(): Promise<Metadata | null> {
