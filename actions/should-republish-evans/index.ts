@@ -8,6 +8,13 @@ import log from '@friends-library/slack';
 type Metadata = { size: number; hash: string };
 
 async function main(): Promise<void> {
+  core.info(
+    `lengh of bucket url: ${(process.env.CLOUD_STORAGE_BUCKET_URL ?? ``).length}`,
+  );
+  core.info(`lengh of bucket: ${(process.env.CLOUD_STORAGE_BUCKET ?? ``).length}`);
+  core.info(`lengh of endpoint: ${(process.env.CLOUD_STORAGE_ENDPOINT ?? ``).length}`);
+  core.info(`lengh of key: ${(process.env.CLOUD_STORAGE_KEY ?? ``).length}`);
+  core.info(`lengh of secret: ${(process.env.CLOUD_STORAGE_SECRET ?? ``).length}`);
   core.info(`starting up`);
   const buildData = await getApiBuildData();
   core.info(`got some buildData: ${buildData?.length}`);
