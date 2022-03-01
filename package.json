@@ -22,15 +22,18 @@
     "@friends-library/doc-artifacts": "^2.0.2",
     "@friends-library/doc-manifests": "^3.0.0",
     "@friends-library/evaluator": "^1.4.5",
+    "@friends-library/evans": "^1.0.0-beta.3",
     "@friends-library/parser": "^1.5.1",
     "@friends-library/slack": "^4.0.0",
     "@octokit/action": "3.6.0",
     "cross-fetch": "3.1.4",
+    "md5": "^2.3.0",
     "netlify": "4.9.0"
   },
   "devDependencies": {
     "@friends-library/dev": "~4.5.2",
     "@friends-library/types": "^7.0.0",
+    "@types/md5": "^2.3.2",
     "@vercel/ncc": "0.27.0",
     "x-chalk": "^1.0.1",
     "x-exec": "^1.2.0"

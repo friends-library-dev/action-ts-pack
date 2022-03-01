@@ -1,0 +1,12 @@
+name: should-republish-evans
+inputs:
+  flp_api_endpoint:
+    required: true
+  flp_api_token:
+    required: true
+outputs:
+  should_republish:
+    description: "'true' if evans needs to be republished"
+runs:
+  using: node12
+  main: ./bundled/index.js
