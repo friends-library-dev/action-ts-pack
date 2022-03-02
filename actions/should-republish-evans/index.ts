@@ -44,7 +44,7 @@ async function getLastBuildMeta(): Promise<Record<string, unknown> | null> {
   }
 }
 
-async function getApiBuildData(): Promise<string | null> {
+async function getApiBuildData(): Promise<Record<string, unknown> | null> {
   const endpoint = process.env.INPUT_FLP_API_ENDPOINT;
   try {
     const res = await fetch(endpoint ?? ``, {
@@ -61,7 +61,7 @@ async function getApiBuildData(): Promise<string | null> {
       reportError(`Got errors fetching evans build data: ${JSON.stringify(json.errors)}`);
       return null;
     }
-    return JSON.stringify(json.data);
+    return json;
   } catch (error: unknown) {
     reportError(`Error fetching evans build data: ${error}`);
     return null;
