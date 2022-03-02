@@ -6,17 +6,18 @@ import { QUERY, sortFriends } from '@friends-library/evans';
 import * as cloud from '@friends-library/cloud';
 import log from '@friends-library/slack';
 
-// type Metadata = { size: number; hash: string };
 type Friend = ReturnType<typeof sortFriends>[number];
 
 async function main(): Promise<void> {
+  core.setOutput(`build_data_cloud_filepath`, CLOUD_FILEPATH);
+  core.info(`Output \`should_republish\` set to \`${CLOUD_FILEPATH}\``);
+
   const apiFriends = await getApiFriends();
   const lastBuildFriends = await getLastBuildFriends();
   if (!apiFriends || !lastBuildFriends) {
     return;
   }
 
-  // const hash = md5(JSON.stringify(buildData));
   if (isEqual(apiFriends, lastBuildFriends)) {
     log.debug(`No republish of evans websites needed`);
     core.setOutput(`should_republish`, `false`);
@@ -24,14 +25,9 @@ async function main(): Promise<void> {
   } else {
     log.info(`Republish of evans websites needed`);
     core.setOutput(`should_republish`, `true`);
-    const tmpPath = `${process.cwd()}/data.json`;
-    fs.writeFileSync(tmpPath, JSON.stringify(apiFriends));
-    await cloud.uploadFile(tmpPath, CLOUD_FILEPATH);
-    // cloud.up
-    // core.info(`Output \`should_republish\` set to \`true\``);
-    // const newMeta: Metadata = { size: buildData.length, hash };
-    // core.setOutput(`build_meta`, JSON.stringify(newMeta));
-    // core.info(`Output \`build_meta\` set to \`${JSON.stringify(newMeta)}\``);
+    const filePath = `${process.cwd()}/data.json`;
+    fs.writeFileSync(filePath, JSON.stringify(apiFriends));
+    await cloud.uploadFile(filePath, CLOUD_FILEPATH);
   }
 }
 

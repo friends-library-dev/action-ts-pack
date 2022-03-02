@@ -7,8 +7,8 @@ inputs:
 outputs:
   should_republish:
     description: "'true' if evans needs to be republished"
-  build_meta:
-    description: json to upload as latest build data if republish succeeds
+  build_data_cloud_filepath:
+    description: cloud filepath of build data for deploy error handling
 runs:
   using: node16
   main: ./bundled/index.js
