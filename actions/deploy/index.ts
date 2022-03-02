@@ -18,13 +18,10 @@ async function main(): Promise<void> {
   const client = new NetlifyAPI(token);
   const shortSha = (latestCommitSha() || ``).substring(0, 8);
   const prData = await pr.data();
-  // if (!prData) {
-  //   core.setFailed(`Failed to find pull request data for deploy`);
-  //   return;
-  // }
 
-  let message = `auto publish @${new Date().toISOString()}`;
+  let message = `cron auto publish @${new Date().toISOString()}`;
   let draft = false;
+
   if (prData) {
     const refIsNotMaster = GITHUB_REF !== `refs/heads/master`;
     draft = refIsNotMaster;
@@ -38,10 +35,10 @@ async function main(): Promise<void> {
   }
 
   core.info(`GITHUB_REF: ${GITHUB_REF}`);
-  core.info(`Deploying build dir: ${workspaceRoot}/${buildDir}`);
-  core.info(`Deploying fns dir: ${fnsDir ? `${workspaceRoot}/${fnsDir}` : `<none>`}`);
+  core.info(`Deploying build dir: \`${workspaceRoot}/${buildDir}\``);
+  core.info(`Deploying fns dir: \`${fnsDir ? `${workspaceRoot}/${fnsDir}` : `<none>`}\``);
   core.info(`Deploying with message: "${message}"`);
-  core.info(`Deploying as draft: ${draft}`);
+  core.info(`Deploying as draft: \`${draft}\``);
 
   try {
     const res = await client.deploy(siteId, `${workspaceRoot}/${buildDir}`, {

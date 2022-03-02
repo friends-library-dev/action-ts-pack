@@ -71,7 +71,7 @@ async function getApiFriends(): Promise<Friend[] | null> {
 function reportError(message: string): void {
   core.error(message);
   core.setFailed(message);
-  log.error(message);
+  log.error(`Error in cron-invoked github action \`should-republish-evans\`: ${message}`);
 }
 
 const CLOUD_FILEPATH = `actions/latest-evans-build.json`;
