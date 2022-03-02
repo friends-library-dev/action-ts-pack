@@ -10,7 +10,7 @@ type Friend = ReturnType<typeof sortFriends>[number];
 
 async function main(): Promise<void> {
   core.setOutput(`build_data_cloud_filepath`, CLOUD_FILEPATH);
-  core.info(`Output \`should_republish\` set to \`${CLOUD_FILEPATH}\``);
+  core.info(`Output \`build_data_cloud_filepath\` set to \`${CLOUD_FILEPATH}\``);
 
   const apiFriends = await getApiFriends();
   const lastBuildFriends = await getLastBuildFriends();
@@ -19,12 +19,13 @@ async function main(): Promise<void> {
   }
 
   if (isEqual(apiFriends, lastBuildFriends)) {
-    log.debug(`No republish of evans websites needed`);
     core.setOutput(`should_republish`, `false`);
     core.info(`Output \`should_republish\` set to \`false\``);
+    log.debug(`No republish of evans websites needed`);
   } else {
-    log.info(`Republish of evans websites needed`);
     core.setOutput(`should_republish`, `true`);
+    core.info(`Output \`should_republish\` set to \`true\``);
+    log.info(`Republish of evans websites needed`);
     const filePath = `${process.cwd()}/data.json`;
     fs.writeFileSync(filePath, JSON.stringify(apiFriends));
     await cloud.uploadFile(filePath, CLOUD_FILEPATH);

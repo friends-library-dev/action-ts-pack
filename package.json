@@ -26,16 +26,14 @@
     "@friends-library/parser": "^1.5.1",
     "@friends-library/slack": "^4.0.0",
     "@octokit/action": "3.6.0",
-    "@types/lodash.isequal": "^4.5.5",
     "cross-fetch": "3.1.4",
     "lodash.isequal": "^4.5.0",
-    "md5": "^2.3.0",
     "netlify": "4.9.0"
   },
   "devDependencies": {
     "@friends-library/dev": "~4.5.2",
     "@friends-library/types": "^7.0.0",
-    "@types/md5": "^2.3.2",
+    "@types/lodash.isequal": "^4.5.5",
     "@vercel/ncc": "0.27.0",
     "x-chalk": "^1.0.1",
     "x-exec": "^1.2.0"
