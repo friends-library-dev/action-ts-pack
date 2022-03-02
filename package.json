@@ -22,7 +22,7 @@
     "@friends-library/doc-artifacts": "^2.0.2",
     "@friends-library/doc-manifests": "^3.0.0",
     "@friends-library/evaluator": "^1.4.5",
-    "@friends-library/evans": "^1.0.0-beta.3",
+    "@friends-library/evans": "^1.0.0-beta.4",
     "@friends-library/parser": "^1.5.1",
     "@friends-library/slack": "^4.0.0",
     "@octokit/action": "3.6.0",
