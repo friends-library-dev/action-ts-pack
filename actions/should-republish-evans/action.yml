@@ -10,5 +10,5 @@ outputs:
   build_meta:
     description: json to upload as latest build data if republish succeeds
 runs:
-  using: node12
+  using: node16
   main: ./bundled/index.js
