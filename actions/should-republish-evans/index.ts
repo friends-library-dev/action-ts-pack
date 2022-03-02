@@ -21,11 +21,9 @@ async function main(): Promise<void> {
   if (isEqual(apiFriends, lastBuildFriends)) {
     core.setOutput(`should_republish`, `false`);
     core.info(`Output \`should_republish\` set to \`false\``);
-    log.debug(`No republish of evans websites needed`);
   } else {
     core.setOutput(`should_republish`, `true`);
     core.info(`Output \`should_republish\` set to \`true\``);
-    log.info(`Republish of evans websites needed`);
     const filePath = `${process.cwd()}/data.json`;
     fs.writeFileSync(filePath, JSON.stringify(apiFriends));
     await cloud.uploadFile(filePath, CLOUD_FILEPATH);
