@@ -11,38 +11,43 @@ async function main(): Promise<void> {
     INPUT_SITE_ID: siteId,
     INPUT_BUILD_DIR: buildDir,
     INPUT_FUNCTIONS_DIR: fnsDir,
-    GITHUB_WORKSPACE: monorepoRoot,
+    GITHUB_WORKSPACE: workspaceRoot,
     GITHUB_REF,
   } = process.env;
 
-  const refIsNotMaster = GITHUB_REF !== `refs/heads/master`;
   const client = new NetlifyAPI(token);
-  const shortSha = (latestCommitSha() || ``).substr(0, 8);
+  const shortSha = (latestCommitSha() || ``).substring(0, 8);
   const prData = await pr.data();
-  if (!prData) {
-    core.setFailed(`Failed to find pull request data for deploy`);
-    return;
-  }
+  // if (!prData) {
+  //   core.setFailed(`Failed to find pull request data for deploy`);
+  //   return;
+  // }
 
-  const { number: prNumber, title: prTitle } = prData;
-  let message = `Push commit @${shortSha}`;
-  if (prNumber && refIsNotMaster) {
-    message = `PR #${prNumber}@${shortSha} "${prTitle}"`;
-  } else if (prNumber && !refIsNotMaster) {
-    message = `Merge PR#${prNumber}@${shortSha} to master`;
+  let message = `auto publish @${new Date().toISOString()}`;
+  let draft = false;
+  if (prData) {
+    const refIsNotMaster = GITHUB_REF !== `refs/heads/master`;
+    draft = refIsNotMaster;
+    const { number: prNumber, title: prTitle } = prData;
+    message = `Push commit @${shortSha}`;
+    if (prNumber && refIsNotMaster) {
+      message = `PR #${prNumber}@${shortSha} "${prTitle}"`;
+    } else if (prNumber && !refIsNotMaster) {
+      message = `Merge PR#${prNumber}@${shortSha} to master`;
+    }
   }
 
   core.info(`GITHUB_REF: ${GITHUB_REF}`);
-  core.info(`Deploying build dir: ${monorepoRoot}/${buildDir}`);
-  core.info(`Deploying fns dir: ${fnsDir ? `${monorepoRoot}/${fnsDir}` : `<none>`}`);
+  core.info(`Deploying build dir: ${workspaceRoot}/${buildDir}`);
+  core.info(`Deploying fns dir: ${fnsDir ? `${workspaceRoot}/${fnsDir}` : `<none>`}`);
   core.info(`Deploying with message: "${message}"`);
-  core.info(`Deploying as draft: ${refIsNotMaster}`);
+  core.info(`Deploying as draft: ${draft}`);
 
   try {
-    const res = await client.deploy(siteId, `${monorepoRoot}/${buildDir}`, {
+    const res = await client.deploy(siteId, `${workspaceRoot}/${buildDir}`, {
       message,
-      draft: refIsNotMaster,
-      ...(fnsDir ? { fnDir: `${monorepoRoot}/${fnsDir}` } : {}),
+      draft,
+      ...(fnsDir ? { fnDir: `${workspaceRoot}/${fnsDir}` } : {}),
       statusCb: (status: any) => status.type !== `hashing` && core.debug(status.msg),
     });
 
