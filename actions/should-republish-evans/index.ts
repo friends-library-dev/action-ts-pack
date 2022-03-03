@@ -40,6 +40,21 @@ async function getLastBuildFriends(): Promise<Friend[] | null> {
   }
 }
 
+// the evans build query pulls in data that doesn't ultimately get rendered
+// like draft friends and documents, so pruning out some of these entities
+// prevents unnecessary republishing while we're doing intake, prep, etc.
+function normalize(unsorted: Friend[]): Friend[] {
+  let friends = sortFriends(unsorted);
+  friends = friends.filter(
+    // query doesn't have friend.published, so fake it by looking for description = TODO
+    (friend) => friend.hasNonDraftDocument && friend.description.trim().length > 5,
+  );
+  for (const friend of friends) {
+    friend.documents = friend.documents.filter((d) => d.hasNonDraftEdition);
+  }
+  return friends;
+}
+
 async function getApiFriends(): Promise<Friend[] | null> {
   const endpoint = process.env.INPUT_FLP_API_ENDPOINT;
   try {
@@ -59,7 +74,7 @@ async function getApiFriends(): Promise<Friend[] | null> {
       reportError(`Got errors fetching evans build data: ${JSON.stringify(json.errors)}`);
       return null;
     }
-    return sortFriends(json.data.friends);
+    return normalize(json.data.friends);
   } catch (error: unknown) {
     reportError(`Error fetching evans build data: ${error}`);
     return null;
