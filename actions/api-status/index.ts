@@ -21,15 +21,10 @@ async function main(): Promise<void> {
   }
 
   try {
-    const res = await fetch(process.env.INPUT_GERTRUDE_API_ENDPOINT ?? ``, {
-      method: `POST`,
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-        query: `query { categories: getAppCategories { name } }`,
-      }),
-    });
+    const endpoint = process.env.INPUT_GERTRUDE_API_ENDPOINT ?? ``;
+    const res = await fetch(`${endpoint}/releases`);
     const json = await res.json();
-    const data = JSON.stringify(json.data.categories[0]);
+    const data = JSON.stringify(json[0].version);
     log.debug(`:white_check_mark: _Gertrude_ *Api Status Check* success \`${data}\``);
   } catch (error: unknown) {
     log.error(`_Gertrude_ *Api Status Check* failed`, { error: String(error) });
